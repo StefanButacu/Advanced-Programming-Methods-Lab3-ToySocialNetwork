@@ -77,4 +77,8 @@ public class UserRepository implements Repository<String, User> {
     public void update(Entity e) {
 
     }
+
+    public ArrayList<User> getUsers() {
+        return entities;
+    }
 }
