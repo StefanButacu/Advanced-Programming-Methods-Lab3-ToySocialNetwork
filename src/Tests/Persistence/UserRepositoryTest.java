@@ -46,10 +46,22 @@ class UserRepositoryTest {
     }
 
     @Test
-    void delete() {
-    }
+    void delete() throws Exception {
+        assertEquals(repo.getSize(), 3);
+        User u = new User("andrei","stefan","stefan@hotmail.com");
+        assertEquals(repo.delete(u).getId(), "stefan@hotmail.com");
+        assertEquals(repo.getSize(), 2);
+        repo.add(u); // keep input test clean
 
+    }
     @Test
     void update() {
+        User u = new User("newName","newPass","stefan@hotmail.com");
+        repo.update(u);
+        // find user
+       // assertEquals(repo.find(u).getNume(), "newName");
+        // assertEquals(repo.find(u).getNume(), "newPass");
+
+
     }
 }
