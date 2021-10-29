@@ -3,7 +3,6 @@ package ro.ubbcluj.map.Persistance;
 import ro.ubbcluj.map.Entities.Entity;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 interface  Repository <ID, E extends Entity<ID>>{
 
@@ -11,9 +10,8 @@ interface  Repository <ID, E extends Entity<ID>>{
     /**
      *  Adds a new Entity into the persistence layer
      * @param e - Entity type
-     * @throws Exception if the entity is duplicated
      */
-     void  add(Entity e) throws Exception;
+     E add(E e) ;
 
     /**
      * Remove the Entity e
@@ -21,14 +19,20 @@ interface  Repository <ID, E extends Entity<ID>>{
      * @return Entity - the deleted entity
      *                - return null if is not found
      */
-     Entity delete(Entity e) throws IOException;
+     E delete(E e) ;
 
     /**
      * Replace the Saved Entity that has the same ID as Param e
      * @param e - Entity
      */
-     void update(Entity e);
+     void update(E e);
 
+
+    /**
+     *
+     * @return - iterable object with all Entities
+     */
+    Iterable<E> findAll();
 
 
 }

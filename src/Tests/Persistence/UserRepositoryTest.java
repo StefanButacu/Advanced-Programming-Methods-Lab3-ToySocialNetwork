@@ -34,13 +34,9 @@ class UserRepositoryTest {
         User u = new User("ana1", "maria2", "test@yahoo.com");
         repo.add(u);
         assertEquals(repo.getSize(), 4);
-        try{
-            User u2 = new User("ana1", "maria2", "test@yahoo.com");
-            repo.add(u2);
-        }
-        catch (Exception e){
-            assertEquals(e.getMessage(), "Duplicated user!");
-        }
+        User u2 = new User("ana1", "maria2", "test@yahoo.com");
+
+        assertNull(repo.add(u2));
         repo.delete(u); // to keep the testInputFile clean
 
     }
@@ -51,6 +47,8 @@ class UserRepositoryTest {
         User u = new User("andrei","stefan","stefan@hotmail.com");
         assertEquals(repo.delete(u).getId(), "stefan@hotmail.com");
         assertEquals(repo.getSize(), 2);
+        assertNull(repo.delete(u)); // delete 2 times the same user
+
         repo.add(u); // keep input test clean
 
     }

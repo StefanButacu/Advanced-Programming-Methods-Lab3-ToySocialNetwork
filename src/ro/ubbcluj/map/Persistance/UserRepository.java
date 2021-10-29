@@ -1,84 +1,33 @@
 package ro.ubbcluj.map.Persistance;
 
-import ro.ubbcluj.map.Entities.Entity;
 import ro.ubbcluj.map.Entities.User;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-public class UserRepository implements Repository<String, User> {
-    private String fileName;
-    private ArrayList<User> entities;
+public class UserRepository extends AbstractFileRepo<String,User> {
 
     public UserRepository(String fileName) throws IOException {
-        super();
-        this.fileName = fileName;
-        entities = new ArrayList<>();
+        super(fileName);
+
         loadFromFile();
-
-    }
-    void loadFromFile() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
-        String line;
-        while((line = br.readLine())!= null){
-            String[] attrs = line.split(",");
-            String userName = attrs[0];
-            String cryptedPasswd = attrs[1];
-            // TODO
-            // Crypted or no passwd
-            String email = attrs[2];
-            User u = new User(userName, cryptedPasswd, email);
-            entities.add(u);
-        }
-        br.close();
-
     }
 
-    public int getSize(){
-        return entities.size();
-
-    }
 
     @Override
-    public void add(Entity e) throws Exception{
-        for(User user: entities){
-            if(user.equals(e))
-                throw new Exception("Duplicated user!");
-        }
-        entities.add((User) e);
-        writeToFile();
+    public User extractEntity(List<String> attrs) throws Exception {
+        if(attrs.size() != 3)
+            throw new Exception("Invalid nr of params!");
+        return new User(attrs.get(0), attrs.get(1), attrs.get(2));
     }
 
-    /**
-     * Overwrites the content of the fileName with the existing users in memory
-     * @throws IOException - if cant open the file
-     */
-    private void writeToFile() throws IOException {
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(fileName,false));
-        for(User u:entities){
-            bw.write(u.getUserName() + ',' +u.getPassword()+','+u.getId());
-            bw.newLine();
-        }
-        bw.close();
-
-    }
 
     @Override
-    public Entity delete(Entity e) throws IOException {
-        entities.removeIf(
-                e::equals
-        );
-        writeToFile();
-        return null;
+    protected String createStringFromEntity(User user) {
+        return user.getUserName()+";"+user.getPassword()+";"+user.getId();
     }
 
-    @Override
-    public void update(Entity e) {
 
-    }
-
-    public ArrayList<User> getUsers() {
-        return entities;
-    }
 }

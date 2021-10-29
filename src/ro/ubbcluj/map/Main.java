@@ -15,11 +15,6 @@ public class Main {
         //  Tests for Repository (75%) - only for update/find
         //  Decide how to implement the password persistence?? Always keep the encrypted form? Or in file is encrypted and in memory decrypted?
         //  Service tests
-        //  - Remove user, what happens with his friendships??
-        //  - Add Friendship, FriendShips repo???
-        //  - User repo is a subject And Friendship Repo is an observer( when i delete an user, i delete his friendships)
-        //  - Depending on how much data i duplicate ( when i update an user, i update friendships )
-        //                                              ( FriendShip(User u1, User u2) - u1,u2 = references
         //  - Maybe have a Singleton scanner object in Ui class
         UserRepository repo = new UserRepository("src/ro/ubbcluj/map/users.csv");
         Service srv = new Service(repo);
@@ -27,3 +22,16 @@ public class Main {
         ui.run();
     }
 }
+/*
+    Buna seara, sunt din grupa 222/1 si as avea o nelamurire cu privire la tema de la lab 3 la MAP.
+    Eu nu prea "simt" nevoia de un un obiect friendship, ci mai degraba as reprezenta aceste prietenii prin
+    adresele de email ale userilor. Vreau sa am un Network repo care sa tina datele intr-un Map< String, Lista<String>>.
+    In Service voi apela NetworkRepo.addFriendship(string1, string2), unde voi face si validarile necesare
+    (sa existe cei 2 useri cu adresele de email). In metoda addFriend as putea sa arunc o exceptie daca cei 2
+    erau deja prieteni, iar la stergere daca incerc sa sterg o prietenie care nu exista
+    tot la fel as arunca o exceptie.
+    Si cand parsez la server aceasta lista de adiacenta pot identifica usor userii fiindca am acces la repoul de useri.
+    Si la incarcarea relatiilor va fi ceva de forma
+    email1@.com,friend1@.com,friend2@.com\nfriend1@.com,email1@.com\n,@friend2,@email1@.com\n...
+
+ */
