@@ -1,6 +1,7 @@
 package ro.ubbcluj.map.Business;
 
 import ro.ubbcluj.map.Entities.User;
+import ro.ubbcluj.map.Persistance.NetworkRepo;
 import ro.ubbcluj.map.Persistance.UserRepository;
 
 import java.io.IOException;
@@ -11,9 +12,12 @@ public class Service {
 
 
     private UserRepository repo;
+    private NetworkRepo relationships;
 
-    public Service(UserRepository repo){
+
+    public Service(UserRepository repo, NetworkRepo relationships){
         this.repo = repo;
+        this.relationships = relationships;
     }
 
     public void addUser(String userName, String password, String email) {
@@ -33,6 +37,19 @@ public class Service {
 
     public int getNrOfUsers(){
         return repo.getSize();
+    }
+
+    public void addFriendship(String user1, String user2){
+        relationships.addFriendship(user1, user2);
+    }
+
+    public void removeFriendship(String user1, String user2){
+        relationships.removeFriendship(user1, user2);
+
+    }
+
+    public int getNumberOfComunities(){
+        return 0;
     }
 
 
