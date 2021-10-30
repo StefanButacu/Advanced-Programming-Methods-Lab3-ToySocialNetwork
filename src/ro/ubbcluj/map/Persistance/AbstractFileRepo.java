@@ -1,6 +1,7 @@
 package ro.ubbcluj.map.Persistance;
 
 import ro.ubbcluj.map.Entities.Entity;
+import ro.ubbcluj.map.Exceptions.RepoException;
 
 import java.io.*;
 import java.util.*;
@@ -11,7 +12,7 @@ abstract public class AbstractFileRepo<ID, E extends Entity<ID>> implements Repo
 
 
     String fileName;
-    public AbstractFileRepo(String fileName){
+    public AbstractFileRepo(String fileName) throws IOException {
         this.fileName = fileName;
         entities = new HashMap<>();
         loadFromFile();
@@ -22,19 +23,19 @@ abstract public class AbstractFileRepo<ID, E extends Entity<ID>> implements Repo
      * Adds a new entity
      * @param e - Entity type
      *          - if is null return null
-     * @return - null - if the entity is already added
-     *         - E entity - if the add was with success
+     * @return - E entity - if the add was with success
+     * @throws RepoException - if - the entity is null
+     *                         if - there is duplicated id
      */
     @Override
-    public E add(E e)  {
+    public E add(E e){
         if( e == null)
-            return null;
-        if( entities.containsKey(e.getId()))
-            return null;
+            throw new RepoException("Null entity!");
+        if( entities.get(e.getId()) != null)
+            throw new RepoException("Duplicated id!");
         entities.put(e.getId(), e);
         writeToFile();
         return e;
-
 
     }
 
@@ -43,11 +44,12 @@ abstract public class AbstractFileRepo<ID, E extends Entity<ID>> implements Repo
      * @param e - Entity
      * @return - null if the object is not present
      *         - the old object otherwise
+     * @throws RepoException - if the Entity does not exist
      */
     @Override
-    public E delete(E e) {
+    public E delete(E e)  {
         if(!entities.containsKey(e.getId()))
-            return null;
+            throw new RepoException("Non-existent id!");
         E e_old = entities.get(e.getId());
         entities.remove(e.getId());
         writeToFile();
@@ -58,17 +60,19 @@ abstract public class AbstractFileRepo<ID, E extends Entity<ID>> implements Repo
     /**
      * @param id -ID
      * @return - Entity if there is one with same id,
-     * - null otherwise
+     * @throws RepoException - if Entity with id does not exist
      */
     @Override
     public E findById(ID id) {
-        return entities.get(id);
+        if( entities.get(id) == null)
+            throw new RepoException("Non-existent id!");
+        else
+            return entities.get(id);
     }
 
+    ////////// NOT REQUIRED update
     @Override
-    public void update(E e) {
-
-    }
+    public void update(E e) {    };
     /**
      *
      * @return - collection of entities
@@ -89,7 +93,7 @@ abstract public class AbstractFileRepo<ID, E extends Entity<ID>> implements Repo
     /**
      * Loads from file the data specific to the repo
      */
-     public void loadFromFile() {
+     public void loadFromFile() throws IOException {
          try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
              String line;
              while ((line = br.readLine()) != null) {
@@ -99,12 +103,8 @@ abstract public class AbstractFileRepo<ID, E extends Entity<ID>> implements Repo
                  E e = this.extractEntity(attrs);
                  this.add(e);
              }
-         } catch (FileNotFoundException e) {
-             e.printStackTrace();
          } catch (IOException e) {
-             e.printStackTrace();
-         } catch (Exception e) {
-             e.printStackTrace();
+             throw e;
          }
      }
 
@@ -131,7 +131,7 @@ abstract public class AbstractFileRepo<ID, E extends Entity<ID>> implements Repo
      * @param attrs - list of strings
      * @return - an Entity type
      */
-    abstract protected E extractEntity(List<String> attrs) throws Exception;
+    abstract protected E extractEntity(List<String> attrs) ;
 
     /**
      *

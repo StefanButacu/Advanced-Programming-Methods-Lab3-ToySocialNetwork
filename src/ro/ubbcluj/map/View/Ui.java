@@ -2,6 +2,7 @@ package ro.ubbcluj.map.View;
 
 import ro.ubbcluj.map.Business.Service;
 import ro.ubbcluj.map.Entities.User;
+import ro.ubbcluj.map.Exceptions.MyException;
 
 import java.io.IOException;
 import java.sql.SQLOutput;
@@ -84,18 +85,24 @@ public class Ui {
                     case 6:
                         printFriendList();
                         break;
+                    case 7:
+                        printNrOfCommunities();
+                        break;
                     default:
                         System.out.println("Invalid command");
 
                 }
-            }catch (Exception e){
+            } catch (Exception e){
                 System.out.println(e.getMessage());
-
             }
 
 
         }
 
+    }
+
+    private void printNrOfCommunities() {
+        System.out.println("Number of communities is "+ srv.getNrOfCommunities());
     }
 
     private void printFriendList() {

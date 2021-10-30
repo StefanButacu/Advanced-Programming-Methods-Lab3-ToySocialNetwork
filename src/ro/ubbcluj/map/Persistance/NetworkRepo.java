@@ -1,13 +1,11 @@
 package ro.ubbcluj.map.Persistance;
 
-import ro.ubbcluj.map.Entities.Friendship;
-import ro.ubbcluj.map.Entities.User;
-import ro.ubbcluj.map.Utils.MyPair;
-import ro.ubbcluj.map.Utils.Observer;
+import ro.ubbcluj.map.Exceptions.RepoException;
 
-import javax.print.DocFlavor;
+
+
 import java.io.*;
-import java.lang.reflect.Array;
+
 import java.util.*;
 
 public class NetworkRepo {
@@ -36,15 +34,28 @@ public class NetworkRepo {
      * Adds a new friendship if it doesn't exist between user with emailUser1 and emailUser2
      * @param emailUser1 - String
      * @param emailUser2 - String
+     * @throws RepoException - if one of the users does not exist
+     *                       - if they are already friends
      */
     public void addFriendship(String emailUser1, String emailUser2){
-        // user1 doesnt have any friends
+
+        userRepo.findById(emailUser1);
+        userRepo.findById(emailUser2);
+
+
         relationships.computeIfAbsent(emailUser1, k -> new ArrayList<String>());
-        // TODO - if user2 is already friend with user 1 do smth
+        if(relationships.get(emailUser1).contains(emailUser2))
+            throw new RepoException("Duplicated friendship!");
+
         relationships.get(emailUser1).add(emailUser2);
         this.size++;
         // userul nu avea niciun prieten
         relationships.computeIfAbsent(emailUser2, k -> new ArrayList<String>());
+
+
+        if(relationships.get(emailUser2).contains(emailUser1))
+            throw new RepoException("Duplicated friendship!");
+
         relationships.get(emailUser2).add(emailUser1);
         this.size++;
 
@@ -54,9 +65,20 @@ public class NetworkRepo {
      * Removes the friendship between the 2 users
      * @param emailUser1 - String
      * @param emailUser2 - String
+     * @throws RepoException -if the users weren't friends
+     *
      */
     public void removeFriendship(String emailUser1, String emailUser2){
-        // TODO - if they are not friends do smth
+        userRepo.findById(emailUser1);
+        userRepo.findById(emailUser2);
+
+        if(relationships.get(emailUser1) == null || relationships.get(emailUser2) == null)
+            throw new RepoException("Non-existing firendship!");
+
+        if(!relationships.get(emailUser1).contains(emailUser2) || !relationships.get(emailUser2).contains(emailUser1))
+            throw new RepoException("Non-existing friendship!");
+
+
         if( relationships.get(emailUser1) != null && relationships.get(emailUser2) != null ) {
             relationships.get(emailUser1).removeIf(x -> x.equals(emailUser2));
             relationships.get(emailUser2).removeIf(x -> x.equals(emailUser1));

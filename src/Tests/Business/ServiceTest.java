@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ro.ubbcluj.map.Business.Service;
 import ro.ubbcluj.map.Entities.User;
+import ro.ubbcluj.map.Exceptions.RepoException;
 import ro.ubbcluj.map.Persistance.NetworkRepo;
 import ro.ubbcluj.map.Persistance.UserRepository;
 
@@ -56,8 +57,65 @@ class ServiceTest {
 
     }
 
+    @Test
+    void deleteUserAndFriendship(){
+            srv.addUser("Ion", "vasile", "ionvasile@yahoo.com");
+            srv.addUser("felix", "sima", "felix@sima.com");
+            srv.addUser("ana", "pop", "ana@pop.com");
+            assertEquals(srv.getUsers().size(), 6);
+            srv.addFriendship("ionvasile@yahoo.com", "felix@sima.com");
+            srv.addFriendship("ionvasile@yahoo.com", "ana@pop.com");
+            srv.addFriendship("ana@pop.com", "felix@sima.com");
+            assertEquals(srv.getUsersFriend("ana@pop.com").size(), 2);
+            srv.removeUser("ionvasile@yahoo.com");
+            assertEquals(srv.getUsersFriend("ana@pop.com").size(), 1);
+
+            assertEquals(srv.getUsersFriend("felix@sima.com").size(), 1);
+
+            try {
+                srv.getUsersFriend("ionvasile@yahoo.com");
+            } catch (RepoException e) {
+                assertEquals(e.getMessage(), "Non-existent id!");
+            }
+            srv.removeUser("felix@sima.com");
+            srv.removeUser("ana@pop.com");
+
+    }
+
 
     @Test
-    void getUsers() {
+    void testCommunity() {
+        srv.addUser("Ion", "vasile", "ionvasile@yahoo.com");
+        srv.addUser("felix", "sima", "felix@sima.com");
+        srv.addUser("ana", "pop", "ana@pop.com");
+
+        srv.addFriendship("ionvasile@yahoo.com", "felix@sima.com");
+        srv.addFriendship("felix@sima.com", "ana@pop.com");
+
+        // anamaria + stefan
+        // stef
+        // ioan - felix - ana
+        assertEquals(srv.getNrOfCommunities(), 3);
+
+        ArrayList<ArrayList<String>> communities = srv.getCommunities();
+        for(int i = 0 ; i < communities.size(); i++){
+            System.out.print("Communinty nr" + i+ ": ");
+            for(String s: communities.get(i)){
+                System.out.print(s + ",");
+            }
+            System.out.println("+++++++++++");
+        }
+
+        srv.addFriendship("ionvasile@yahoo.com", "anamaria@yahoo.com");
+        assertEquals(srv.getNrOfCommunities(), 2);
+
+
+        srv.removeUser("ionvasile@yahoo.com");
+        srv.removeUser("felix@sima.com");
+        srv.removeUser("ana@pop.com");
+
+
     }
+
+
 }
