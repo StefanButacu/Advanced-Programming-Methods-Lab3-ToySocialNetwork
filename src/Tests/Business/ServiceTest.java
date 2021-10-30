@@ -3,10 +3,12 @@ package Tests.Business;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ro.ubbcluj.map.Business.Service;
+import ro.ubbcluj.map.Entities.User;
 import ro.ubbcluj.map.Persistance.NetworkRepo;
 import ro.ubbcluj.map.Persistance.UserRepository;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,6 +39,23 @@ class ServiceTest {
 
 
     }
+
+    @Test
+    void addRemoveFriendship() {
+        srv.addFriendship("stef2001@gmail.com", "stefan@hotmail.com");
+        ArrayList<User> users = srv.getUsersFriend("stefan@hotmail.com");
+        assertEquals(users.get(0).getId(), "anamaria@yahoo.com");
+        assertEquals(users.get(1).getId(), "stef2001@gmail.com");
+        users = srv.getUsersFriend("stef2001@gmail.com");
+        assertEquals(users.size(), 1);
+        assertEquals(users.get(0).getId(), "stefan@hotmail.com");
+
+        srv.removeFriendship("stefan@hotmail.com", "stef2001@gmail.com");
+        users = srv.getUsersFriend("stef2001@gmail.com");
+        assertEquals(users.size(), 0);
+
+    }
+
 
     @Test
     void getUsers() {

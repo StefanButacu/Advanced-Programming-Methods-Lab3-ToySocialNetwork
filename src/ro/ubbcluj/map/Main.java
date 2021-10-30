@@ -1,6 +1,7 @@
 package ro.ubbcluj.map;
 
 import ro.ubbcluj.map.Business.Service;
+import ro.ubbcluj.map.Persistance.NetworkRepo;
 import ro.ubbcluj.map.Persistance.UserRepository;
 import ro.ubbcluj.map.View.Ui;
 
@@ -15,9 +16,10 @@ public class Main {
         //  Tests for Repository (75%) - only for update/find
         //  Decide how to implement the password persistence?? Always keep the encrypted form? Or in file is encrypted and in memory decrypted?
         //  Service tests
-        //  - Maybe have a Singleton scanner object in Ui class
+        //
         UserRepository repo = new UserRepository("src/ro/ubbcluj/map/users.csv");
-        Service srv = new Service(repo);
+        NetworkRepo relationships = new NetworkRepo(repo, "src/ro/ubbcluj/map/friends.csv");
+        Service srv = new Service(repo,relationships);
         Ui ui = new Ui(srv);
         ui.run();
     }

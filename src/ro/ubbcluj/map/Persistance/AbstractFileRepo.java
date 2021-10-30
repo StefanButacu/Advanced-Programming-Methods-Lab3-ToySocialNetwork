@@ -54,6 +54,17 @@ abstract public class AbstractFileRepo<ID, E extends Entity<ID>> implements Repo
         return e_old;
     }
 
+
+    /**
+     * @param id -ID
+     * @return - Entity if there is one with same id,
+     * - null otherwise
+     */
+    @Override
+    public E findById(ID id) {
+        return entities.get(id);
+    }
+
     @Override
     public void update(E e) {
 

@@ -30,6 +30,14 @@ interface  Repository <ID, E extends Entity<ID>>{
 
     /**
      *
+     * @param id -ID
+     * @return - Entity if there is one with same id,
+     *         - null otherwise
+     */
+     E findById(ID id);
+
+    /**
+     *
      * @return - iterable object with all Entities
      */
     Iterable<E> findAll();

@@ -5,6 +5,7 @@ import ro.ubbcluj.map.Persistance.NetworkRepo;
 import ro.ubbcluj.map.Persistance.UserRepository;
 
 import java.io.IOException;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -50,6 +51,18 @@ public class Service {
 
     public int getNumberOfComunities(){
         return 0;
+    }
+
+    public ArrayList<User> getUsersFriend(String user) {
+        ArrayList<String> friendsEmails = relationships.getFriends(user);
+        ArrayList<User> friends = new ArrayList<>();
+
+        for (String s : friendsEmails) {
+            User u = repo.findById(s);
+            friends.add(u);
+
+        }
+        return friends;
     }
 
 
