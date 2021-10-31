@@ -35,9 +35,9 @@ class ServiceTest {
 
     @Test
     void addRemoveUser() throws IOException {
-        srv.addUser("user1", "pass1", "passuser1@yahoo.com");
+        srv.addUser("user1", "pass1", "passuser@yahoo.com");
         assertEquals(srv.getNrOfUsers(), 4);
-        srv.removeUser("passuser1@yahoo.com");
+        srv.removeUser("passuser@yahoo.com");
         assertEquals(srv.getNrOfUsers(), 3);
 
 
@@ -100,6 +100,8 @@ class ServiceTest {
         assertEquals(srv.getNrOfCommunities(), 3);
 
         ArrayList<ArrayList<String>> communities = srv.getCommunities();
+
+        /*
         for(int i = 0 ; i < communities.size(); i++){
             System.out.print("Communinty nr" + i+ ": ");
             for(String s: communities.get(i)){
@@ -107,6 +109,8 @@ class ServiceTest {
             }
             System.out.println("+++++++++++");
         }
+
+         */
 
         srv.addFriendship("ionvasile@yahoo.com", "anamaria@yahoo.com");
         assertEquals(srv.getNrOfCommunities(), 2);

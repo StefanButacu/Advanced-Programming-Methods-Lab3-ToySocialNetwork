@@ -40,17 +40,7 @@ class UserTest {
         Assertions.assertEquals(u1.getUserName(), "user");
     }
 
-    @Test
-    void getPassword() {
-        Assertions.assertEquals(u1.getPassword(), "alex");
 
-    }
-
-    @Test
-    void setPassword() {
-        u1.setPassword("pass2");
-        Assertions.assertEquals(u1.getPassword(), "pass2");
-    }
 
     @Test
     void getId() {

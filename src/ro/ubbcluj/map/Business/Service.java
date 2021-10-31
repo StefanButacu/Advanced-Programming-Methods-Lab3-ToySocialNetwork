@@ -107,14 +107,12 @@ public class Service {
         ArrayList<Integer> aux = new ArrayList<>();
         for (ArrayList<String> community : communities) {
 
-            System.out.println(community);
             for (int j = 0; j < community.size(); j++) {
                 // Start from every vertex from this community
                 // and get the maximum time
                 // of dfs
                 aux.add(0);
                 DFS(community.get(j), aux, visited);
-                System.out.println(aux.get(0));
                 if (aux.get(0) > maxTimeDFS) {
                     maxTimeDFS = aux.get(0);
                     // tre sa torn din comunitatea i in the most social community

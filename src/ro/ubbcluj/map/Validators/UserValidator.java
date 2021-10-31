@@ -23,7 +23,7 @@ public class UserValidator {
             errorMsg += "Password is too short\n";
         String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(u.getUserName());
+        Matcher matcher = pattern.matcher(u.getId());
         if(!matcher.matches())
             errorMsg += "Invalid email address\n";
         if(errorMsg.length() > 0)
