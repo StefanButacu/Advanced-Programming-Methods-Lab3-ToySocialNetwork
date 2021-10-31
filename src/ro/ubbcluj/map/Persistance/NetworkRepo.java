@@ -21,7 +21,7 @@ public class NetworkRepo {
     private String fileName;
     private int size;  // TOT TIMPUL IN SIZE O SA FIE CATE RANDURI AM IN FISIER
 
-    public NetworkRepo(UserRepository repo, String fileName){
+    public NetworkRepo(UserRepository repo, String fileName) throws Exception {
         relationships = new HashMap<>();
         this.userRepo = repo;
         this.fileName = fileName;
@@ -43,14 +43,14 @@ public class NetworkRepo {
         userRepo.findById(emailUser2);
 
 
-        relationships.computeIfAbsent(emailUser1, k -> new ArrayList<String>());
+        relationships.computeIfAbsent(emailUser1, k -> new ArrayList<>());
         if(relationships.get(emailUser1).contains(emailUser2))
             throw new RepoException("Duplicated friendship!");
 
         relationships.get(emailUser1).add(emailUser2);
         this.size++;
         // userul nu avea niciun prieten
-        relationships.computeIfAbsent(emailUser2, k -> new ArrayList<String>());
+        relationships.computeIfAbsent(emailUser2, k -> new ArrayList<>());
 
 
         if(relationships.get(emailUser2).contains(emailUser1))
@@ -66,9 +66,9 @@ public class NetworkRepo {
      * @param emailUser1 - String
      * @param emailUser2 - String
      * @throws RepoException -if the users weren't friends
-     *
+     * @throws IOException - if something goes bad with fileName
      */
-    public void removeFriendship(String emailUser1, String emailUser2){
+    public void removeFriendship(String emailUser1, String emailUser2) throws IOException {
         userRepo.findById(emailUser1);
         userRepo.findById(emailUser2);
 
@@ -106,7 +106,7 @@ public class NetworkRepo {
     }
 
 
-    public void loadFromFile(){
+    public void loadFromFile() throws Exception {
 
         /// user1;user2;
         /// user2;user1;
@@ -122,23 +122,24 @@ public class NetworkRepo {
                 String firstEmail = attrs[0];
                 String secondEmail = attrs[1];
                 /////////
-                relationships.computeIfAbsent(firstEmail, k -> new ArrayList<String>());
+                relationships.computeIfAbsent(firstEmail, k -> new ArrayList<>());
                 // TODO - if user2 is already friend with user 1 do smth
                 relationships.get(firstEmail).add(secondEmail);
                 this.size++;
 
                 }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw e;
         }
     }
-
-    private void writeToFile() {
+    /**
+     * Writes to the file the friendships emailFriend1;emailFriend2;
+     *                                    ... emailFriend2;emailFriend1;
+     */
+    private void writeToFile() throws IOException {
         try (BufferedWriter br = new BufferedWriter(new FileWriter(fileName))) {
-            String line = "";
+            String line;
             for(Map.Entry<String, ArrayList<String> > entry: relationships.entrySet()){
                 for(String friend : entry.getValue()) {
                     line = entry.getKey() + ";" + friend;
@@ -148,7 +149,7 @@ public class NetworkRepo {
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
 
     }

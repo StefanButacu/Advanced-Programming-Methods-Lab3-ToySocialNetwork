@@ -4,7 +4,9 @@ import ro.ubbcluj.map.Entities.User;
 import ro.ubbcluj.map.Exceptions.RepoException;
 import ro.ubbcluj.map.Persistance.NetworkRepo;
 import ro.ubbcluj.map.Persistance.UserRepository;
+import ro.ubbcluj.map.Validators.UserValidator;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Service {
@@ -12,7 +14,7 @@ public class Service {
 
     private final UserRepository repo;
     private final NetworkRepo relationships;
-
+    private final UserValidator userValidator = new UserValidator();
 
     public Service(UserRepository repo, NetworkRepo relationships){
         this.repo = repo;
@@ -28,7 +30,9 @@ public class Service {
     public void addUser(String userName, String password, String email) {
         // TODO
         //  -Data validation : - not empty strings, strong password ,email pattern?
-        repo.add(new User(userName, password, email));
+        User u = new User(userName, password, email);
+        userValidator.validate(u);
+        repo.add(u);
     }
 
     /**
@@ -37,7 +41,7 @@ public class Service {
      * @throws RepoException - if the user does not exists
      *
      */
-    public void removeUser(String email) {
+    public void removeUser(String email) throws IOException {
         repo.findById(email);
         ArrayList<String> userFriends = relationships.getFriends(email);
         if (userFriends != null){
@@ -71,7 +75,7 @@ public class Service {
      * @param user1 - String email of user
      * @param user2 - String email of user
      */
-    public void removeFriendship(String user1, String user2){
+    public void removeFriendship(String user1, String user2) throws IOException {
         relationships.removeFriendship(user1, user2);
 
     }
@@ -88,15 +92,78 @@ public class Service {
 
     }
 
+    /**
+     *
+     * @return - ArrayList<Users> - with the longest DFS chain
+     */
+    public ArrayList<User> getTheMostSociableCommunity(){
+        Integer maxTimeDFS = Integer.MIN_VALUE;
+        ArrayList<User> mostSociableCommunity = new ArrayList<>();
+        ArrayList<ArrayList<String>> communities = getCommunities();
+        HashMap<String, Boolean> visited = new HashMap<>();
+        for(User u: getUsers()){
+            visited.put(u.getId(), Boolean.FALSE);
+        }
+        ArrayList<Integer> aux = new ArrayList<>();
+        for (ArrayList<String> community : communities) {
+
+            System.out.println(community);
+            for (int j = 0; j < community.size(); j++) {
+                // Start from every vertex from this community
+                // and get the maximum time
+                // of dfs
+                aux.add(0);
+                DFS(community.get(j), aux, visited);
+                System.out.println(aux.get(0));
+                if (aux.get(0) > maxTimeDFS) {
+                    maxTimeDFS = aux.get(0);
+                    // tre sa torn din comunitatea i in the most social community
+                    mostSociableCommunity.clear();
+                    for (String userEmail : community) {
+                        User u = repo.findById(userEmail);
+                        mostSociableCommunity.add(u);
+                    }
+                }
+                aux.remove(0);
+            }
+
+
+        }
+
+        return mostSociableCommunity;
+    }
+
+    private void DFS(String currentUser, ArrayList<Integer> aux, Map<String, Boolean> visited) {
+        visited.put(currentUser, Boolean.TRUE);
+        Integer time =  aux.get(0);
+        time++;
+        aux.set(0,time);
+        ArrayList<String> friends = relationships.getFriends(currentUser);
+        if(friends != null) {
+            for (String s: friends){
+                if(visited.get(s) == Boolean.FALSE){
+                    DFS(s, aux, visited);
+
+                }
+
+            }
+
+        }
+    }
 
     /**
      *
      * @return - the number of Communities
      * A community is a network of friends
      */
+    // bad complexity - every time you want to get the communities
+    // i search the whole graph. A better approach is to use
+    // a UNION-FIND algorithm, every time i add a friendship
+    // i UNION the sets something like that
+
     public ArrayList<ArrayList<String>> getCommunities(){
 
-        ArrayList<ArrayList<String>> components = new ArrayList<>();
+        ArrayList<ArrayList<String>> communities = new ArrayList<>();
         HashMap<String, Boolean> visited = new HashMap<>();
         for(User u: getUsers()){
             visited.put(u.getId(), Boolean.FALSE);
@@ -104,20 +171,20 @@ public class Service {
         for(Map.Entry<String,Boolean> entry: visited.entrySet()){
             if(entry.getValue() == Boolean.FALSE){
             ArrayList<String> members= BFS(entry.getKey(), visited);
-            components.add(members);
+            communities.add(members);
             }
 
 
         }
 
-        return components;
+        return communities;
     }
 
     /**
      *
      * @param start - User email
      * @param visited - Map of <String, Booolean> -String- userName, Boolean - visited
-     * @return
+     * @return ArrayList<String> - the community
      */
     ArrayList<String> BFS(String start,Map<String, Boolean> visited){
         visited.put(start, Boolean.TRUE);

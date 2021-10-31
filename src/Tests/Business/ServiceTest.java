@@ -28,11 +28,13 @@ class ServiceTest {
             srv = new Service(repo, relationships);
         }catch (IOException e) {
             System.out.println("File not found");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Test
-    void addRemoveUser() {
+    void addRemoveUser() throws IOException {
         srv.addUser("user1", "pass1", "passuser1@yahoo.com");
         assertEquals(srv.getNrOfUsers(), 4);
         srv.removeUser("passuser1@yahoo.com");
@@ -42,7 +44,7 @@ class ServiceTest {
     }
 
     @Test
-    void addRemoveFriendship() {
+    void addRemoveFriendship() throws IOException {
         srv.addFriendship("stef2001@gmail.com", "stefan@hotmail.com");
         ArrayList<User> users = srv.getUsersFriend("stefan@hotmail.com");
         assertEquals(users.get(0).getId(), "anamaria@yahoo.com");
@@ -58,7 +60,7 @@ class ServiceTest {
     }
 
     @Test
-    void deleteUserAndFriendship(){
+    void deleteUserAndFriendship() throws IOException {
             srv.addUser("Ion", "vasile", "ionvasile@yahoo.com");
             srv.addUser("felix", "sima", "felix@sima.com");
             srv.addUser("ana", "pop", "ana@pop.com");
@@ -84,7 +86,7 @@ class ServiceTest {
 
 
     @Test
-    void testCommunity() {
+    void testCommunity() throws IOException {
         srv.addUser("Ion", "vasile", "ionvasile@yahoo.com");
         srv.addUser("felix", "sima", "felix@sima.com");
         srv.addUser("ana", "pop", "ana@pop.com");
@@ -109,6 +111,8 @@ class ServiceTest {
         srv.addFriendship("ionvasile@yahoo.com", "anamaria@yahoo.com");
         assertEquals(srv.getNrOfCommunities(), 2);
 
+        srv.removeFriendship("ionvasile@yahoo.com", "anamaria@yahoo.com");
+        srv.getTheMostSociableCommunity();
 
         srv.removeUser("ionvasile@yahoo.com");
         srv.removeUser("felix@sima.com");

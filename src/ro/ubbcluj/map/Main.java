@@ -10,8 +10,6 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-	// write your code here
-        System.out.println("Starting...");
         // TODO
         //  Decide how to implement the password persistence?? Always keep the encrypted form? Or in file is encrypted and in memory decrypted?
 

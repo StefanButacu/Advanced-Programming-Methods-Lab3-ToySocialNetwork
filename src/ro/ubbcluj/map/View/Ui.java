@@ -20,9 +20,9 @@ public class Ui {
 
     /**
      * Add user menu
-     * @throws Exception
+     *
      */
-    public void addUser() throws Exception {
+    public void addUser(){
         Scanner in = new Scanner(System.in);
         System.out.print("User name: ");
         String userName = in.next();
@@ -50,6 +50,9 @@ public class Ui {
         System.out.print(">>>");
     }
 
+    /**
+     * Remove user menu. Asks for user email
+     */
     public void removeUser() throws IOException {
         System.out.print("Enter the email of the user that you want to remove: ");
         Scanner in = new Scanner(System.in);
@@ -58,7 +61,7 @@ public class Ui {
         System.out.println("Deletion completed");
 
     }
-    public void run() throws Exception {
+    public void run(){
         Scanner in = new Scanner(System.in);
         while (true){
             printMenu();
@@ -101,10 +104,17 @@ public class Ui {
 
     }
 
+    /**
+     * Prints the number of communities
+     */
     private void printNrOfCommunities() {
         System.out.println("Number of communities is "+ srv.getNrOfCommunities());
     }
 
+
+    /**
+     * Prints the friends list for the user email input
+     */
     private void printFriendList() {
         Scanner in = new Scanner(System.in);
         System.out.print("Enter user email:"); // TODO - email or username?
@@ -114,7 +124,10 @@ public class Ui {
 
     }
 
-    private void removeFriendship() {
+    /**
+     * Removes the friendship between 2 users based on their emails
+     */
+    private void removeFriendship() throws IOException {
         Scanner in = new Scanner(System.in);
         System.out.print("Enter first user email:"); // TODO - email or username??
         String user1 = in.next();
@@ -136,6 +149,10 @@ public class Ui {
 
     }
 
+    /**
+     * Prints the users
+     * @param users -Collection <Users>
+     */
     private void printUsers(Collection<User> users) {
         System.out.format("%20s%20s%20s\n", "UserName", "Password","Email");
         for(User u: users){

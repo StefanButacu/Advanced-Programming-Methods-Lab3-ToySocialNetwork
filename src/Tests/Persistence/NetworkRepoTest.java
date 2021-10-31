@@ -25,8 +25,9 @@ class NetworkRepoTest {
             userRepo = new UserRepository(fileName);
             networkRepo = new NetworkRepo(userRepo, friendshipsFileName);
 
-        }catch (IOException e) {
+        }catch (Exception e) {
             System.out.println("File not found");
+
         }
     }
 
