@@ -16,9 +16,9 @@ public class NetworkRepo {
     // friend1@gmail.com, stefbutacu@gmail.com
     // friend2@gmail.com, stefbutacu@gmail.com
 
-    private HashMap<String, ArrayList<String> > relationships;
-    private UserRepository userRepo;
-    private String fileName;
+    private final HashMap<String, ArrayList<String> > relationships;
+    private final UserRepository userRepo;
+    private final String fileName;
     private int size;  // TOT TIMPUL IN SIZE O SA FIE CATE RANDURI AM IN FISIER
 
     public NetworkRepo(UserRepository repo, String fileName) throws Exception {
@@ -37,7 +37,7 @@ public class NetworkRepo {
      * @throws RepoException - if one of the users does not exist
      *                       - if they are already friends
      */
-    public void addFriendship(String emailUser1, String emailUser2){
+    public void addFriendship(String emailUser1, String emailUser2) throws IOException {
 
         userRepo.findById(emailUser1);
         userRepo.findById(emailUser2);
@@ -58,7 +58,7 @@ public class NetworkRepo {
 
         relationships.get(emailUser2).add(emailUser1);
         this.size++;
-
+        writeToFile();
     }
 
     /**

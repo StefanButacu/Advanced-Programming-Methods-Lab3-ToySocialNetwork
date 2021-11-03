@@ -47,6 +47,9 @@ public class Ui {
         System.out.println("4. Add friendship");
         System.out.println("5. Remove friendship");
         System.out.println("6. Print friend list");
+        System.out.println("7. Print number of communities" );
+        System.out.println("8. Print the most social community" );
+        System.out.println("9. Print the most social communityVersion2" );
         System.out.print(">>>");
     }
 
@@ -90,6 +93,12 @@ public class Ui {
                         break;
                     case 7:
                         printNrOfCommunities();
+                        break;
+                    case 8:
+                        printUsers(srv.getTheMostSociableCommunity());
+                        break;
+                    case 9:
+                        printUsers(srv.getTheMostSociableCommunityVersion2());
                         break;
                     default:
                         System.out.println("Invalid command");
@@ -138,7 +147,7 @@ public class Ui {
 
     }
 
-    private void addFriendship() {
+    private void addFriendship() throws IOException {
         Scanner in = new Scanner(System.in);
         System.out.print("Enter first user email:"); // TODO - email or username??
         String user1 = in.next();
@@ -154,9 +163,9 @@ public class Ui {
      * @param users -Collection <Users>
      */
     private void printUsers(Collection<User> users) {
-        System.out.format("%20s%20s%20s\n", "UserName", "Password","Email");
+        System.out.format("%20s%20s\n", "UserName","Email");
         for(User u: users){
-            System.out.format("%20s%20s%20s\n", u.getUserName(), u.getPassword(),u.getId());
+            System.out.format("%20s%20s\n", u.getUserName(),u.getId());
 
         }
     }

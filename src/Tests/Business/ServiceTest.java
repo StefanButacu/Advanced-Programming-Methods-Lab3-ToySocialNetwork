@@ -96,10 +96,13 @@ class ServiceTest {
 
         // anamaria + stefan
         // stef
-        // ioan - felix - ana
+        // ion - felix - ana
+        srv.longestPathBetween2Nodes("ionvasile@yahoo.com","ana@pop.com");
+
         assertEquals(srv.getNrOfCommunities(), 3);
 
         ArrayList<ArrayList<String>> communities = srv.getCommunities();
+
 
         /*
         for(int i = 0 ; i < communities.size(); i++){

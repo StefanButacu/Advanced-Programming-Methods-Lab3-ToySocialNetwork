@@ -7,6 +7,7 @@ import ro.ubbcluj.map.Persistance.UserRepository;
 import ro.ubbcluj.map.Validators.UserValidator;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Service {
@@ -66,7 +67,7 @@ public class Service {
      * @param user1 - String email of user
      * @param user2 - String email of user
      */
-    public void addFriendship(String user1, String user2){
+    public void addFriendship(String user1, String user2) throws IOException {
         relationships.addFriendship(user1, user2);
     }
 
@@ -130,6 +131,85 @@ public class Service {
 
         return mostSociableCommunity;
     }
+
+    boolean isValid(int k, Vector<String> path){
+        String user1 = path.elementAt(k);
+        String user2 = path.elementAt(k-1);
+        if(!relationships.getFriends(user1).contains(user2))
+            return false;
+        for(int i = 0 ; i < k; i++)
+            if(path.elementAt(i).equals(path.elementAt(k)))
+                return false;
+        return true;
+
+
+
+    }
+
+
+    void verifyMaxPath( Vector<String> path,ArrayList<String> longestPath){
+        if(path.size() > longestPath.size()){
+            longestPath.clear();
+            for(int i = 0 ; i < path.size(); i++){
+                longestPath.add(path.elementAt(i));
+            }
+        }
+
+    }
+    void backtracking(int k, String dest, Vector<String> path, ArrayList<String> longestPath){
+        ArrayList<String> searchSpace = relationships.getFriends(path.elementAt(k-1));
+        for(String friend: searchSpace){
+            if(k < path.size())
+                path.set(k, friend);
+            else
+                path.add(friend);
+            if(isValid(k,path)){
+                if(path.elementAt(k).equals(dest))
+                    verifyMaxPath(path,longestPath);
+                else
+                    backtracking(k+1,dest,path,longestPath);
+
+            }
+
+        }
+
+    }
+
+    public  ArrayList<String> longestPathBetween2Nodes(String first, String second){
+        Vector<String> path = new Vector<>(150);
+        ArrayList<String> longestPath = new ArrayList<>();
+
+        path.add(0,first);
+        backtracking(1, second, path,longestPath);
+        return longestPath;
+
+
+    }
+
+    public ArrayList<User> getTheMostSociableCommunityVersion2(){
+
+        ArrayList<ArrayList<String>> communities = getCommunities();
+        ArrayList<String> longestPath = new ArrayList<>();
+        for(ArrayList<String> community: communities){
+            for(int i =0 ; i < community.size(); i++){
+                for(int j = i + 1; j < community.size(); j++){
+                    ArrayList<String> currentPath = longestPathBetween2Nodes(community.get(i),community.get(j));
+                    if(currentPath.size() > longestPath.size()){
+                        longestPath.clear();
+                        longestPath.addAll(currentPath);
+                    }
+                }
+            }
+        }
+        ArrayList<User> longestPathUsers = new ArrayList<>();
+        for(String email: longestPath){
+            User u = repo.findById(email);
+            longestPathUsers.add(u);
+        }
+
+        return longestPathUsers;
+    }
+
 
     private void DFS(String currentUser, ArrayList<Integer> aux, Map<String, Boolean> visited) {
         visited.put(currentUser, Boolean.TRUE);
