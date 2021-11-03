@@ -137,9 +137,10 @@ public class Service {
         String user2 = path.elementAt(k-1);
         if(!relationships.getFriends(user1).contains(user2))
             return false;
-        for(int i = 0 ; i < k; i++)
-            if(path.elementAt(i).equals(path.elementAt(k)))
-                return false;
+        for(int i = 0 ; i < path.size(); i++)
+            for(int j = i +1 ; j < path.size(); j++)
+                if(path.elementAt(i).equals(path.elementAt(j)))
+                    return false;
         return true;
 
 
@@ -165,7 +166,10 @@ public class Service {
                 path.add(friend);
             if(isValid(k,path)){
                 if(path.elementAt(k).equals(dest))
+                {
                     verifyMaxPath(path,longestPath);
+                }
+
                 else
                     backtracking(k+1,dest,path,longestPath);
 
@@ -234,13 +238,11 @@ public class Service {
      * @return - the number of Communities
      * A community is a network of friends
      */
-    // bad complexity - every time you want to get the communities
-    // i search the whole graph. A better approach is to use
-    // a UNION-FIND algorithm, every time i add a friendship
-    // i UNION the sets something like that
-
     public ArrayList<ArrayList<String>> getCommunities(){
-
+        // bad complexity - every time i want to get the communities
+        // i search the whole graph. A better approach is to use
+        // a UNION-FIND algorithm, every time i add a friendship
+        // i UNION the sets something like that
         ArrayList<ArrayList<String>> communities = new ArrayList<>();
         HashMap<String, Boolean> visited = new HashMap<>();
         for(User u: getUsers()){

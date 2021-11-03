@@ -13,10 +13,16 @@ public class Main {
         // TODO
         //  Decide how to implement the password persistence?? Always keep the encrypted form? Or in file is encrypted and in memory decrypted?
 
-        UserRepository repo = new UserRepository("src/ro/ubbcluj/map/users.csv");
-        NetworkRepo relationships = new NetworkRepo(repo, "src/ro/ubbcluj/map/friends.csv");
-        Service srv = new Service(repo,relationships);
-        Ui ui = new Ui(srv);
-        ui.run();
+        try {
+            UserRepository repo = new UserRepository("src/ro/ubbcluj/map/users.csv");
+
+            NetworkRepo relationships = new NetworkRepo(repo, "src/ro/ubbcluj/map/friends.csv");
+            Service srv = new Service(repo, relationships);
+            Ui ui = new Ui(srv);
+            ui.run();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+
+        }
     }
 }

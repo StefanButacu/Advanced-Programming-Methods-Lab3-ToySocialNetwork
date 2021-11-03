@@ -108,7 +108,6 @@ public class Ui {
                 System.out.println(e.getMessage());
             }
 
-
         }
 
     }
@@ -147,6 +146,10 @@ public class Ui {
 
     }
 
+    /**
+     * Adds a new friendship
+     * @throws IOException
+     */
     private void addFriendship() throws IOException {
         Scanner in = new Scanner(System.in);
         System.out.print("Enter first user email:"); // TODO - email or username??
@@ -163,6 +166,7 @@ public class Ui {
      * @param users -Collection <Users>
      */
     private void printUsers(Collection<User> users) {
+        System.out.println("Number of users: "+ users.size());
         System.out.format("%20s%20s\n", "UserName","Email");
         for(User u: users){
             System.out.format("%20s%20s\n", u.getUserName(),u.getId());
