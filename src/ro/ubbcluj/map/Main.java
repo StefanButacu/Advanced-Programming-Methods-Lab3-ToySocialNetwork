@@ -9,9 +9,7 @@ import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
-        // TODO
-        //  Decide how to implement the password persistence?? Always keep the encrypted form? Or in file is encrypted and in memory decrypted?
+    public static void main(String[] args) {
 
         try {
             UserRepository repo = new UserRepository("src/ro/ubbcluj/map/users.csv");
